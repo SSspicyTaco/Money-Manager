@@ -3,479 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rocket League Trainer</title>
+    <title>Finance Manager</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #e6ddd6;
-            color: #010101;
+            background-color: #f5f5f5;
         }
 
         header {
-            background-color: #682bd7;
+            background-color: #333;
             color: #fff;
-            padding: 10px 0;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
             text-align: center;
-        }
-
-        nav ul li {
-            display: inline-block;
-            margin: 0 10px;
-        }
-
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        nav ul li a:hover {
-            color: #a37cf0;
+            padding: 1rem 0;
         }
 
         main {
-            padding: 20px;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        section {
-            display: none;
+        h2 {
+            margin-top: 0;
         }
 
-        footer {
-            background-color: #010101;
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            grid-column: span 2;
+        }
+
+        input, select, button {
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #333;
             color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            outline: none;
-            color: #fff;
-            background-color: #682bd7;
             border: none;
-            border-radius: 15px;
-            box-shadow: 0 9px #999;
-            margin-top: 10px;
-        }
-
-        .button:hover {background-color: #a37cf0}
-
-        .button:active {
-            background-color: #a37cf0;
-            box-shadow: 0 5px #666;
-            transform: translateY(4px);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .menu-toggle {
-            display: none;
             cursor: pointer;
-            font-size: 24px;
-            padding: 10px;
-            background-color: #682bd7;
-            color: white;
-            border: none;
         }
 
-        @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                text-align: left;
-            }
-
-            nav ul li {
-                display: block;
-                margin: 10px 0;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .button {
-                display: block;
-                width: 100%;
-                box-sizing: border-box;
-                margin: 10px 0;
-            }
-
-            main {
-                padding: 10px;
-            }
-
-            footer {
-                position: relative;
-            }
+        button:hover {
+            background-color: #555;
         }
 
-        .account-section {
-            margin-bottom: 20px;
-        }
-
-        .transactions-list {
+        ul {
             list-style: none;
             padding: 0;
         }
 
-        .transactions-list li {
-            padding: 5px;
-            border-bottom: 1px solid #ccc;
+        li {
+            background-color: #f5f5f5;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+        }
+
+        #summary p {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <header>
-        <button class="menu-toggle" onclick="toggleMenu()">&#9776;</button>
-        <nav>
-            <ul>
-                <li>
-                    <a href="#home" onclick="showSection('home')">
-                        <img src="Live_8_pm_2292024__1_-removebg-preview.png" alt="Logo" style="height: 50px;">
-                    </a>
-                </li>
-                <li><a href="#home" onclick="showSection('home')">Home</a></li>
-                <li><a href="#about" onclick="showSection('about')">About</a></li>
-                <li><a href="#services" onclick="showSection('services')">Coaching Services</a></li>
-                <li><a href="#blog" onclick="showSection('blog')">Blog</a></li>
-                <li><a href="#contact" onclick="showSection('contact')">Contact</a></li>
-                <li><a href="#faq" onclick="showSection('faq')">FAQ</a></li>
-                <li><a href="#rocket-league-trainer" onclick="showSection('rocket-league-trainer')">Rocket League Trainer</a></li>
-                <li><a href="#r6-trainer" onclick="showSection('r6-trainer')">R6 Trainer</a></li>
-                <li><a href="#finance" onclick="showSection('finance')">Finance</a></li>
-            </ul>
-        </nav>
+        <h1>Finance Manager</h1>
     </header>
-    
     <main>
-        <section id="home">
-            <h1>Welcome to SSspicyTaco's Esports Coaching and Blog</h1>
-            <p>Your one-stop destination for professional coaching.</p>
+        <section id="add-account">
+            <h2>Add Account</h2>
+            <form id="account-form">
+                <label for="account-name">Account Name:</label>
+                <input type="text" id="account-name" required>
+                <button type="submit">Add Account</button>
+            </form>
         </section>
-
-        <section id="about">
-            <h2>About Us</h2>
-            <p>We are a team of experienced Rainbow Six Siege players dedicated to helping you improve your game.</p>
-            <p>Make sure to follow us on our social media platforms:</p>
-            <button class="button" onclick="window.open('https://www.twitch.tv/ssspicytaco', '_blank')">Follow on Twitch</button>
-            <button class="button" onclick="window.open('https://www.youtube.com/channel/UCI0oO0_xmwFOuDSck3zsdLQ', '_blank')">Follow on YouTube</button>
-        </section>
-
-        <section id="services">
-            <h2>Coaching Services</h2>
-            <div>
-                <h3>Rocket League</h3>
-                <button class="button" onclick="window.open('https://metafy.gg/@ssspicytaco/sessions/free-consultation-nVMvi9tXNqz', '_blank')">Book your free consultation call today</button>
-                <button class="button" onclick="window.open('https://metafy.gg/@ssspicytaco/sessions/1-hour-coaching-session-KFRb6Q94ZrS', '_blank')">Book your 1-hour coaching call</button>
-            </div>
-            <div>
-                <h3>Rainbow Six Siege</h3>
-                <p>We offer a range of coaching services to suit your needs, including one-on-one coaching, group sessions, and video reviews.</p>
-            </div>
-        </section>
-
-        <section id="blog">
-            <h2>Blog</h2>
-            <p>Explore our articles, guides, and video tutorials to enhance your skills and strategies.</p>
-        </section>
-
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>Have questions? Reach out to us via our contact form or on social media.</p>
-        </section>
-
-        <section id="faq">
-            <h2>FAQ</h2>
-            <p>Find answers to commonly asked questions about our coaching services.</p>
-        </section>
-
-        <section id="rocket-league-trainer">
-            <h2>Rocket League Trainer</h2>
-            <p>Manage your Rocket League training and track your progress.</p>
-            
-            <div>
-                <h3>Track Your Practice</h3>
-                <label for="practiceMinutes">Minutes Practiced:</label>
-                <input type="number" id="practiceMinutes" min="0">
-                <button class="button" onclick="addPracticePoints()">Add Practice Points</button>
-            </div>
-
-            <div>
-                <h3>Casual Game</h3>
-                <label for="casualScore">Game Score:</label>
-                <input type="number" id="casualScore" min="0">
-                <label for="casualResult">Result:</label>
-                <select id="casualResult">
-                    <option value="win">Win</option>
-                    <option value="lose">Lose</option>
+        <section id="add-transaction">
+            <h2>Add Transaction</h2>
+            <form id="transaction-form">
+                <label for="account">Account:</label>
+                <select id="account" required></select>
+                <label for="type">Type:</label>
+                <select id="type" required>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
                 </select>
-                <button class="button" onclick="addCasualGamePoints()">Add Casual Game Points</button>
-            </div>
-
-            <div>
-                <h3>Competitive Game</h3>
-                <button class="button" onclick="startCompetitiveGame()">Start Competitive Game (-1000 points)</button>
-                <div id="competitiveGameSection" class="hidden">
-                    <label for="competitiveScore">Game Score:</label>
-                    <input type="number" id="competitiveScore" min="0">
-                    <label for="competitiveResult">Result:</label>
-                    <select id="competitiveResult">
-                        <option value="win">Win</option>
-                        <option value="lose">Lose</option>
-                    </select>
-                    <button class="button" onclick="addCompetitiveGamePoints()">Add Competitive Game Points</button>
-                </div>
-            </div>
-
-            <div>
-                <h3>Powerup Shop</h3>
-                <button class="button" onclick="buyItem('coaching')">Buy Coaching Session (5000 points)</button>
-                <button class="button" onclick="buyItem('workshop')">Buy Workshop Map (5000 points)</button>
-            </div>
-
-            <div>
-                <h3>Already Had Points</h3>
-                <label for="previousPoints">Add Previous Points:</label>
-                <input type="number" id="previousPoints" min="0">
-                <button class="button" onclick="addPreviousPoints()">Add Points</button>
-            </div>
-
-            <div>
-                <h3>Current Points: <span id="points">0</span></h3>
-            </div>
+                <label for="category">Category:</label>
+                <select id="category" required>
+                    <option value="salary">Salary</option>
+                    <option value="business">Business</option>
+                    <option value="investment">Investment</option>
+                    <option value="gift">Gift</option>
+                    <option value="other-income">Other Income</option>
+                    <option value="rent">Rent</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="health">Health</option>
+                    <option value="travel">Travel</option>
+                    <option value="education">Education</option>
+                    <option value="other-expense">Other Expense</option>
+                </select>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" required>
+                <label for="description">Description:</label>
+                <input type="text" id="description" required>
+                <button type="submit">Add</button>
+            </form>
         </section>
-
-        <section id="r6-trainer">
-            <h2>R6 Trainer</h2>
-            <p>Details about Rainbow Six Siege training.</p>
+        <section id="accounts">
+            <h2>Accounts</h2>
+            <ul id="account-list"></ul>
         </section>
-
-        <section id="finance">
-            <h2>Finance</h2>
-            <div>
-                <h3>Accounts</h3>
-                <div id="accounts"></div>
-                <button class="button" onclick="addAccount()">Add Account</button>
-            </div>
-            <div>
-                <h3>Transactions</h3>
-                <div class="account-section">
-                    <label for="accountSelect">Select Account:</label>
-                    <select id="accountSelect"></select>
-                </div>
-                <div>
-                    <label for="transactionAmount">Amount:</label>
-                    <input type="number" id="transactionAmount" min="0">
-                    <label for="transactionType">Type:</label>
-                    <select id="transactionType">
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                    <label for="transactionCategory">Category:</label>
-                    <select id="transactionCategory">
-                        <option value="salary">Salary</option>
-                        <option value="freelance">Freelance</option>
-                        <option value="investment">Investment</option>
-                        <option value="savings">Savings</option>
-                        <option value="bills">Bills</option>
-                        <option value="groceries">Groceries</option>
-                        <option value="entertainment">Entertainment</option>
-                        <option value="transport">Transport</option>
-                        <option value="education">Education</option>
-                        <option value="health">Health</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <button class="button" onclick="addTransaction()">Add Transaction</button>
-                </div>
-                <h3>Account Balance: <span id="accountBalance">0</span></h3>
-                <ul id="transactionsList" class="transactions-list"></ul>
-            </div>
+        <section id="summary">
+            <h2>Summary</h2>
+            <p>Total Income: <span id="total-income">0</span></p>
+            <p>Total Expense: <span id="total-expense">0</span></p>
+            <p>Balance: <span id="balance">0</span></p>
         </section>
     </main>
-
-    <footer>
-        <p>&copy; 2024 SSspicyTaco. All rights reserved.</p>
-    </footer>
-    
     <script>
-        let points = 0;
-        let accounts = [];
-        let currentAccountIndex = null;
+        document.getElementById('account-form').addEventListener('submit', addAccount);
+        document.getElementById('transaction-form').addEventListener('submit', addTransaction);
 
-        function showSection(sectionId) {
-            // Hide all sections
-            const sections = document.querySelectorAll('section');
-            sections.forEach(section => {
-                section.style.display = 'none';
-            });
+        let accounts = {};
 
-            // Show the selected section
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.style.display = 'block';
+        function addAccount(event) {
+            event.preventDefault();
+            const accountName = document.getElementById('account-name').value;
+            if (accounts[accountName]) {
+                alert('Account already exists');
+                return;
             }
+            accounts[accountName] = { transactions: [], totalIncome: 0, totalExpense: 0, balance: 0 };
 
-            // Hide menu after selection on mobile
-            if (window.innerWidth <= 768) {
-                document.querySelector('nav ul').style.display = 'none';
-            }
+            updateAccountList();
+            updateAccountDropdown();
         }
 
-        function updatePoints() {
-            document.getElementById('points').innerText = points;
-        }
+        function addTransaction(event) {
+            event.preventDefault();
+            const account = document.getElementById('account').value;
+            const type = document.getElementById('type').value;
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const description = document.getElementById('description').value;
 
-        function addPracticePoints() {
-            const minutes = parseInt(document.getElementById('practiceMinutes').value);
-            if (!isNaN(minutes) && minutes > 0) {
-                points += Math.floor((1000 / 33) * minutes);
-                updatePoints();
-            }
-        }
+            const transaction = { type, category, amount, description };
+            accounts[account].transactions.push(transaction);
 
-        function addCasualGamePoints() {
-            const score = parseInt(document.getElementById('casualScore').value);
-            const result = document.getElementById('casualResult').value;
-            if (!isNaN(score) && score > 0) {
-                points += Math.floor(score / 2);
-                if (result === 'win') {
-                    points += 250;
-                }
-                updatePoints();
-            }
-        }
-
-        function startCompetitiveGame() {
-            if (points >= 1000) {
-                points -= 1000;
-                updatePoints();
-                document.getElementById('competitiveGameSection').classList.remove('hidden');
+            if (type === 'income') {
+                accounts[account].totalIncome += amount;
             } else {
-                alert('Sorry, you do not have enough points! Go practice!');
+                accounts[account].totalExpense += amount;
             }
-        }
+            accounts[account].balance = accounts[account].totalIncome - accounts[account].totalExpense;
 
-        function addCompetitiveGamePoints() {
-            const score = parseInt(document.getElementById('competitiveScore').value);
-            const result = document.getElementById('competitiveResult').value;
-            if (!isNaN(score) && score > 0) {
-                points += Math.floor(score / 2);
-                if (result === 'win') {
-                    points += 250;
-                }
-                updatePoints();
-                document.getElementById('competitiveGameSection').classList.add('hidden');
-            }
-        }
-
-        function buyItem(item) {
-            if (points >= 5000) {
-                points -= 5000;
-                updatePoints();
-                alert('You have successfully bought a ' + (item === 'coaching' ? 'Coaching Session' : 'Workshop Map') + '!');
-            } else {
-                alert('Sorry, you do not have enough points!');
-            }
-        }
-
-        function addPreviousPoints() {
-            const previousPoints = parseInt(document.getElementById('previousPoints').value);
-            if (!isNaN(previousPoints) && previousPoints > 0) {
-                points += previousPoints;
-                updatePoints();
-            }
-        }
-
-        function toggleMenu() {
-            const navUl = document.querySelector('nav ul');
-            navUl.style.display = navUl.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function addAccount() {
-            const accountName = prompt("Enter account name:");
-            if (accountName) {
-                const account = {
-                    name: accountName,
-                    balance: 0,
-                    transactions: []
-                };
-                accounts.push(account);
-                updateAccountList();
-            }
+            updateTransactionList(account);
+            updateSummary(account);
         }
 
         function updateAccountList() {
-            const accountSelect = document.getElementById('accountSelect');
-            accountSelect.innerHTML = '';
-            accounts.forEach((account, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = account.name;
-                accountSelect.appendChild(option);
+            const accountList = document.getElementById('account-list');
+            accountList.innerHTML = '';
+
+            Object.keys(accounts).forEach(account => {
+                const li = document.createElement('li');
+                li.innerText = `${account} - Balance: $${accounts[account].balance.toFixed(2)}`;
+                accountList.appendChild(li);
             });
-            currentAccountIndex = accounts.length - 1;
-            accountSelect.value = currentAccountIndex;
-            updateAccountDetails();
         }
 
-        function updateAccountDetails() {
-            if (currentAccountIndex !== null) {
-                const account = accounts[currentAccountIndex];
-                document.getElementById('accountBalance').textContent = account.balance;
-                const transactionsList = document.getElementById('transactionsList');
-                transactionsList.innerHTML = '';
-                account.transactions.forEach(transaction => {
-                    const li = document.createElement('li');
-                    li.textContent = `${transaction.type}: $${transaction.amount} - ${transaction.category}`;
-                    transactionsList.appendChild(li);
-                });
-            }
+        function updateAccountDropdown() {
+            const accountDropdown = document.getElementById('account');
+            accountDropdown.innerHTML = '';
+
+            Object.keys(accounts).forEach(account => {
+                const option = document.createElement('option');
+                option.value = account;
+                option.innerText = account;
+                accountDropdown.appendChild(option);
+            });
         }
 
-        function addTransaction() {
-            const amount = parseFloat(document.getElementById('transactionAmount').value);
-            const type = document.getElementById('transactionType').value;
-            const category = document.getElementById('transactionCategory').value;
-            if (!isNaN(amount) && currentAccountIndex !== null) {
-                const account = accounts[currentAccountIndex];
-                if (type === 'income') {
-                    account.balance += amount;
-                } else {
-                    account.balance -= amount;
-                }
-                account.transactions.push({ amount, type, category });
-                updateAccountDetails();
-            }
+        function updateTransactionList(account) {
+            const transactionList = document.createElement('ul');
+            transactionList.innerHTML = '';
+
+            accounts[account].transactions.forEach(transaction => {
+                const li = document.createElement('li');
+                li.innerText = `${transaction.type} (${transaction.category}) - $${transaction.amount.toFixed(2)}: ${transaction.description}`;
+                transactionList.appendChild(li);
+            });
+
+            const accountList = document.getElementById('account-list');
+            accountList.innerHTML = '';
+            const accountItem = document.createElement('li');
+            accountItem.innerText = `${account} - Balance: $${accounts[account].balance.toFixed(2)}`;
+            accountItem.appendChild(transactionList);
+            accountList.appendChild(accountItem);
         }
 
-        // Show the home section by default
-        document.addEventListener('DOMContentLoaded', () => {
-            showSection('home');
-            updatePoints();
-        });
-
-        document.getElementById('accountSelect').addEventListener('change', function() {
-            currentAccountIndex = this.value;
-            updateAccountDetails();
-        });
+        function updateSummary(account) {
+            document.getElementById('total-income').innerText = accounts[account].totalIncome.toFixed(2);
+            document.getElementById('total-expense').innerText = accounts[account].totalExpense.toFixed(2);
+            document.getElementById('balance').innerText = accounts[account].balance.toFixed(2);
+        }
     </script>
 </body>
 </html>
