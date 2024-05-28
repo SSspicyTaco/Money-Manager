@@ -72,6 +72,14 @@
         #summary p {
             font-weight: bold;
         }
+
+        #login-form {
+            display: none;
+        }
+
+        #app {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -79,73 +87,115 @@
         <h1>Finance Manager</h1>
     </header>
     <main>
-        <section id="add-account">
-            <h2>Add Account</h2>
-            <form id="account-form">
-                <label for="account-name">Account Name:</label>
-                <input type="text" id="account-name" required>
-                <button type="submit">Add Account</button>
+        <section id="login-form">
+            <h2>Login</h2>
+            <form id="login">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+                <button type="submit">Login</button>
+                <button type="button" id="register">Register</button>
             </form>
         </section>
-        <section id="add-transaction">
-            <h2>Add Transaction</h2>
-            <form id="transaction-form">
-                <label for="account">Account:</label>
-                <select id="account" required></select>
-                <label for="type">Type:</label>
-                <select id="type" required>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                </select>
-                <label for="category">Category:</label>
-                <select id="category" required>
-                    <option value="salary">Salary</option>
-                    <option value="business">Business</option>
-                    <option value="investment">Investment</option>
-                    <option value="gift">Gift</option>
-                    <option value="other-income">Other Income</option>
-                    <option value="rent">Rent</option>
-                    <option value="groceries">Groceries</option>
-                    <option value="utilities">Utilities</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="health">Health</option>
-                    <option value="travel">Travel</option>
-                    <option value="education">Education</option>
-                    <option value="other-expense">Other Expense</option>
-                </select>
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" required>
-                <label for="description">Description:</label>
-                <input type="text" id="description" required>
-                <button type="submit">Add</button>
-            </form>
-        </section>
-        <section id="accounts">
-            <h2>Accounts</h2>
-            <ul id="account-list"></ul>
-        </section>
-        <section id="summary">
-            <h2>Summary</h2>
-            <p>Total Income: <span id="total-income">0</span></p>
-            <p>Total Expense: <span id="total-expense">0</span></p>
-            <p>Balance: <span id="balance">0</span></p>
+        <section id="app">
+            <section id="add-account">
+                <h2>Add Account</h2>
+                <form id="account-form">
+                    <label for="account-name">Account Name:</label>
+                    <input type="text" id="account-name" required>
+                    <button type="submit">Add Account</button>
+                </form>
+            </section>
+            <section id="add-transaction">
+                <h2>Add Transaction</h2>
+                <form id="transaction-form">
+                    <label for="account">Account:</label>
+                    <select id="account" required></select>
+                    <label for="type">Type:</label>
+                    <select id="type" required>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <label for="category">Category:</label>
+                    <select id="category" required>
+                        <option value="salary">Salary</option>
+                        <option value="business">Business</option>
+                        <option value="investment">Investment</option>
+                        <option value="gift">Gift</option>
+                        <option value="other-income">Other Income</option>
+                        <option value="rent">Rent</option>
+                        <option value="groceries">Groceries</option>
+                        <option value="utilities">Utilities</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="health">Health</option>
+                        <option value="travel">Travel</option>
+                        <option value="education">Education</option>
+                        <option value="other-expense">Other Expense</option>
+                    </select>
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" required>
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" required>
+                    <button type="submit">Add</button>
+                </form>
+            </section>
+            <section id="accounts">
+                <h2>Accounts</h2>
+                <ul id="account-list"></ul>
+            </section>
+            <section id="summary">
+                <h2>Summary</h2>
+                <p>Total Income: <span id="total-income">0</span></p>
+                <p>Total Expense: <span id="total-expense">0</span></p>
+                <p>Balance: <span id="balance">0</span></p>
+            </section>
         </section>
     </main>
     <script>
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('users')) || {};
+
+        document.getElementById('login').addEventListener('submit', handleLogin);
+        document.getElementById('register').addEventListener('click', handleRegister);
         document.getElementById('account-form').addEventListener('submit', addAccount);
         document.getElementById('transaction-form').addEventListener('submit', addTransaction);
 
-        let accounts = {};
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (users[username] && users[username].password === password) {
+                currentUser = username;
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                loadUserData();
+            } else {
+                alert('Invalid login credentials');
+            }
+        }
+
+        function handleRegister() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (!users[username]) {
+                users[username] = { password, accounts: {} };
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('User registered successfully');
+            } else {
+                alert('Username already exists');
+            }
+        }
 
         function addAccount(event) {
             event.preventDefault();
             const accountName = document.getElementById('account-name').value;
-            if (accounts[accountName]) {
+            if (users[currentUser].accounts[accountName]) {
                 alert('Account already exists');
                 return;
             }
-            accounts[accountName] = { transactions: [], totalIncome: 0, totalExpense: 0, balance: 0 };
-
+            users[currentUser].accounts[accountName] = { transactions: [], totalIncome: 0, totalExpense: 0, balance: 0 };
+            localStorage.setItem('users', JSON.stringify(users));
             updateAccountList();
             updateAccountDropdown();
         }
@@ -159,15 +209,16 @@
             const description = document.getElementById('description').value;
 
             const transaction = { type, category, amount, description };
-            accounts[account].transactions.push(transaction);
+            users[currentUser].accounts[account].transactions.push(transaction);
 
             if (type === 'income') {
-                accounts[account].totalIncome += amount;
+                users[currentUser].accounts[account].totalIncome += amount;
             } else {
-                accounts[account].totalExpense += amount;
+                users[currentUser].accounts[account].totalExpense += amount;
             }
-            accounts[account].balance = accounts[account].totalIncome - accounts[account].totalExpense;
+            users[currentUser].accounts[account].balance = users[currentUser].accounts[account].totalIncome - users[currentUser].accounts[account].totalExpense;
 
+            localStorage.setItem('users', JSON.stringify(users));
             updateTransactionList(account);
             updateSummary(account);
         }
@@ -176,9 +227,9 @@
             const accountList = document.getElementById('account-list');
             accountList.innerHTML = '';
 
-            Object.keys(accounts).forEach(account => {
+            Object.keys(users[currentUser].accounts).forEach(account => {
                 const li = document.createElement('li');
-                li.innerText = `${account} - Balance: $${accounts[account].balance.toFixed(2)}`;
+                li.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
                 accountList.appendChild(li);
             });
         }
@@ -187,7 +238,7 @@
             const accountDropdown = document.getElementById('account');
             accountDropdown.innerHTML = '';
 
-            Object.keys(accounts).forEach(account => {
+            Object.keys(users[currentUser].accounts).forEach(account => {
                 const option = document.createElement('option');
                 option.value = account;
                 option.innerText = account;
@@ -199,7 +250,7 @@
             const transactionList = document.createElement('ul');
             transactionList.innerHTML = '';
 
-            accounts[account].transactions.forEach(transaction => {
+            users[currentUser].accounts[account].transactions.forEach(transaction => {
                 const li = document.createElement('li');
                 li.innerText = `${transaction.type} (${transaction.category}) - $${transaction.amount.toFixed(2)}: ${transaction.description}`;
                 transactionList.appendChild(li);
@@ -208,16 +259,22 @@
             const accountList = document.getElementById('account-list');
             accountList.innerHTML = '';
             const accountItem = document.createElement('li');
-            accountItem.innerText = `${account} - Balance: $${accounts[account].balance.toFixed(2)}`;
+            accountItem.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
             accountItem.appendChild(transactionList);
             accountList.appendChild(accountItem);
         }
 
         function updateSummary(account) {
-            document.getElementById('total-income').innerText = accounts[account].totalIncome.toFixed(2);
-            document.getElementById('total-expense').innerText = accounts[account].totalExpense.toFixed(2);
-            document.getElementById('balance').innerText = accounts[account].balance.toFixed(2);
+            document.getElementById('total-income').innerText = users[currentUser].accounts[account].totalIncome.toFixed(2);
+            document.getElementById('total-expense').innerText = users[currentUser].accounts[account].totalExpense.toFixed(2);
+            document.getElementById('balance').innerText = users[currentUser].accounts[account].balance.toFixed(2);
+        }
+
+        function loadUserData() {
+            updateAccountList();
+            updateAccountDropdown();
         }
     </script>
 </body>
 </html>
+
