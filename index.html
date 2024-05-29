@@ -72,6 +72,7 @@
             padding: 0.5rem;
             border: 1px solid #ddd;
             border-radius: 5px;
+            position: relative;
         }
 
         #summary p {
@@ -84,6 +85,17 @@
 
         #app {
             display: none;
+        }
+
+        .account-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        .bill-info {
+            font-size: 0.9rem;
+            color: #555;
         }
     </style>
 </head>
@@ -138,6 +150,8 @@
                         <option value="education">Education</option>
                         <option value="other-expense">Other Expense</option>
                     </select>
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" required>
                     <label for="amount">Amount:</label>
                     <input type="number" id="amount" step="0.01" required>
                     <label for="description">Description:</label>
@@ -155,6 +169,26 @@
                 <p>Total Expense: <span id="total-expense">0</span></p>
                 <p>Balance: <span id="balance">0</span></p>
             </section>
+            <section id="add-bill">
+                <h2>Add Bill</h2>
+                <form id="bill-form">
+                    <label for="bill-account">Account:</label>
+                    <select id="bill-account" required></select>
+                    <label for="bill-amount">Amount:</label>
+                    <input type="number" id="bill-amount" step="0.01" required>
+                    <label for="bill-date">Date:</label>
+                    <input type="date" id="bill-date" required>
+                    <label for="bill-frequency">Recurring:</label>
+                    <select id="bill-frequency" required>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                    <button type="submit">Add Bill</button>
+                </form>
+                <h3>Upcoming Bills</h3>
+                <ul id="bill-list"></ul>
+            </section>
         </section>
     </main>
     <script>
@@ -165,6 +199,7 @@
         document.getElementById('register').addEventListener('click', handleRegister);
         document.getElementById('account-form').addEventListener('submit', addAccount);
         document.getElementById('transaction-form').addEventListener('submit', addTransaction);
+        document.getElementById('bill-form').addEventListener('submit', addBill);
 
         function handleLogin(event) {
             event.preventDefault();
@@ -184,7 +219,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             if (!users[username]) {
-                users[username] = { password, accounts: {} };
+                users[username] = { password, accounts: {}, bills: [] };
                 localStorage.setItem('users', JSON.stringify(users));
                 alert('User registered successfully');
             } else {
@@ -202,7 +237,7 @@
             users[currentUser].accounts[accountName] = { transactions: [], totalIncome: 0, totalExpense: 0, balance: 0 };
             localStorage.setItem('users', JSON.stringify(users));
             updateAccountList();
-            updateAccountDropdown();
+            updateAccountDropdowns();
         }
 
         function addTransaction(event) {
@@ -212,8 +247,9 @@
             const category = document.getElementById('category').value;
             const amount = parseFloat(document.getElementById('amount').value);
             const description = document.getElementById('description').value;
+            const date = document.getElementById('date').value;
 
-            const transaction = { type, category, amount, description };
+            const transaction = { type, category, amount, description, date };
             users[currentUser].accounts[account].transactions.push(transaction);
 
             if (type === 'income') {
@@ -228,6 +264,20 @@
             updateSummary(account);
         }
 
+        function addBill(event) {
+            event.preventDefault();
+            const account = document.getElementById('bill-account').value;
+            const amount = parseFloat(document.getElementById('bill-amount').value);
+            const date = document.getElementById('bill-date').value;
+            const frequency = document.getElementById('bill-frequency').value;
+
+            const bill = { account, amount, date, frequency };
+            users[currentUser].bills.push(bill);
+
+            localStorage.setItem('users', JSON.stringify(users));
+            updateBillList();
+        }
+
         function updateAccountList() {
             const accountList = document.getElementById('account-list');
             accountList.innerHTML = '';
@@ -235,19 +285,37 @@
             Object.keys(users[currentUser].accounts).forEach(account => {
                 const li = document.createElement('li');
                 li.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
+                const actions = document.createElement('div');
+                actions.className = 'account-actions';
+                const renameButton = document.createElement('button');
+                renameButton.innerText = 'Rename';
+                renameButton.onclick = () => renameAccount(account);
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.onclick = () => deleteAccount(account);
+                actions.appendChild(renameButton);
+                actions.appendChild(deleteButton);
+                li.appendChild(actions);
                 accountList.appendChild(li);
             });
         }
 
-        function updateAccountDropdown() {
+        function updateAccountDropdowns() {
             const accountDropdown = document.getElementById('account');
+            const billAccountDropdown = document.getElementById('bill-account');
             accountDropdown.innerHTML = '';
+            billAccountDropdown.innerHTML = '';
 
             Object.keys(users[currentUser].accounts).forEach(account => {
                 const option = document.createElement('option');
                 option.value = account;
                 option.innerText = account;
                 accountDropdown.appendChild(option);
+
+                const billOption = document.createElement('option');
+                billOption.value = account;
+                billOption.innerText = account;
+                billAccountDropdown.appendChild(billOption);
             });
         }
 
@@ -257,7 +325,7 @@
 
             users[currentUser].accounts[account].transactions.forEach(transaction => {
                 const li = document.createElement('li');
-                li.innerText = `${transaction.type} (${transaction.category}) - $${transaction.amount.toFixed(2)}: ${transaction.description}`;
+                li.innerText = `${transaction.date} - ${transaction.type} (${transaction.category}) - $${transaction.amount.toFixed(2)}: ${transaction.description}`;
                 transactionList.appendChild(li);
             });
 
@@ -275,9 +343,44 @@
             document.getElementById('balance').innerText = users[currentUser].accounts[account].balance.toFixed(2);
         }
 
+        function updateBillList() {
+            const billList = document.getElementById('bill-list');
+            billList.innerHTML = '';
+
+            users[currentUser].bills.forEach(bill => {
+                const li = document.createElement('li');
+                li.innerText = `Account: ${bill.account} - Amount: $${bill.amount.toFixed(2)} - Date: ${bill.date} - Frequency: ${bill.frequency}`;
+                li.className = 'bill-info';
+                billList.appendChild(li);
+            });
+        }
+
         function loadUserData() {
             updateAccountList();
-            updateAccountDropdown();
+            updateAccountDropdowns();
+            updateBillList();
+        }
+
+        function renameAccount(account) {
+            const newName = prompt('Enter new name for the account:', account);
+            if (newName && !users[currentUser].accounts[newName]) {
+                users[currentUser].accounts[newName] = users[currentUser].accounts[account];
+                delete users[currentUser].accounts[account];
+                localStorage.setItem('users', JSON.stringify(users));
+                updateAccountList();
+                updateAccountDropdowns();
+            } else {
+                alert('Invalid or duplicate account name');
+            }
+        }
+
+        function deleteAccount(account) {
+            if (confirm(`Are you sure you want to delete the account "${account}"? This action cannot be undone.`)) {
+                delete users[currentUser].accounts[account];
+                localStorage.setItem('users', JSON.stringify(users));
+                updateAccountList();
+                updateAccountDropdowns();
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
