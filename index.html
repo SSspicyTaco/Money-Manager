@@ -285,19 +285,26 @@
             Object.keys(users[currentUser].accounts).forEach(account => {
                 const li = document.createElement('li');
                 li.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
-                const actions = document.createElement('div');
+                const actions = document.createElement('select');
                 actions.className = 'account-actions';
-                const renameButton = document.createElement('button');
-                renameButton.innerText = 'Rename';
-                renameButton.onclick = () => renameAccount(account);
-                const deleteButton = document.createElement('button');
-                deleteButton.innerText = 'Delete';
-                deleteButton.onclick = () => deleteAccount(account);
-                actions.appendChild(renameButton);
-                actions.appendChild(deleteButton);
+                actions.innerHTML = `
+                    <option value="" disabled selected>Actions</option>
+                    <option value="rename">Rename</option>
+                    <option value="delete">Delete</option>
+                `;
+                actions.onchange = (event) => handleAccountAction(event, account);
                 li.appendChild(actions);
                 accountList.appendChild(li);
             });
+        }
+
+        function handleAccountAction(event, account) {
+            const action = event.target.value;
+            if (action === 'rename') {
+                renameAccount(account);
+            } else if (action === 'delete') {
+                deleteAccount(account);
+            }
         }
 
         function updateAccountDropdowns() {
