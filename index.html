@@ -14,16 +14,12 @@
 
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
         }
 
         .container {
             width: 300px;
             padding: 20px;
+            margin: 100px auto;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -75,10 +71,85 @@
         .toggle-link:hover {
             text-decoration: underline;
         }
+
+        /* Burger Menu */
+        .burger-menu {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .burger-menu div {
+            width: 30px;
+            height: 3px;
+            background-color: black;
+            margin: 5px 0;
+        }
+
+        nav {
+            position: fixed;
+            right: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            transition: right 0.3s ease;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            padding-top: 60px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            background-color: #444;
+            border-bottom: 1px solid #555;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        nav.active {
+            right: 0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        /* Main Menu */
+        #mainMenu {
+            display: none;
+        }
+
+        /* Simple Styling */
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        #financialStatement {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #financialStatement p {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Page -->
+    <div class="container" id="loginContainer">
         <h2 id="form-title">Login</h2>
         <div id="error-message" class="error-message"></div>
 
@@ -87,58 +158,38 @@
             <input type="text" id="loginUsername" placeholder="Username">
             <input type="password" id="loginPassword" placeholder="Password">
             <button onclick="login()">Login</button>
-            <p>Don't have an account? <span class="toggle-link" onclick="toggleForms()">Register</span></p>
+        </div>
+    </div>
+
+    <!-- Main Menu with Burger Menu -->
+    <div id="mainMenu" class="content">
+        <!-- Burger Menu -->
+        <div class="burger-menu" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
 
-        <!-- Registration Form -->
-        <div id="registerForm" style="display: none;">
-            <input type="text" id="registerUsername" placeholder="Choose Username">
-            <input type="password" id="registerPassword" placeholder="Choose Password">
-            <button onclick="register()">Register</button>
-            <p>Already have an account? <span class="toggle-link" onclick="toggleForms()">Login</span></p>
+        <!-- Side Navigation -->
+        <nav id="menu">
+            <a href="#">Financial Statement</a>
+            <a href="#">Wants</a>
+            <a href="#">Income/Expense Tracker</a>
+        </nav>
+
+        <!-- Financial Statement Page -->
+        <div id="financialStatement">
+            <h2>Financial Statement</h2>
+            <p>Checking Account: $2,500</p>
+            <p>Savings Account: $10,000</p>
+            <p>Investment Account: $5,000</p>
         </div>
     </div>
 
     <script>
-        // Toggle between login and registration forms
-        function toggleForms() {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const formTitle = document.getElementById('form-title');
-            const errorMessage = document.getElementById('error-message');
-
-            if (loginForm.style.display === 'none') {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                formTitle.textContent = 'Login';
-                errorMessage.textContent = '';
-            } else {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                formTitle.textContent = 'Register';
-                errorMessage.textContent = '';
-            }
-        }
-
-        // Register a new user
-        function register() {
-            const username = document.getElementById('registerUsername').value;
-            const password = document.getElementById('registerPassword').value;
-            const errorMessage = document.getElementById('error-message');
-
-            if (username && password) {
-                // Store user credentials in localStorage
-                localStorage.setItem('username', username);
-                localStorage.setItem('password', password);
-
-                // Show success message and redirect to login form
-                errorMessage.style.color = 'green';
-                errorMessage.textContent = 'Registration successful! Please login.';
-                toggleForms();
-            } else {
-                errorMessage.style.color = 'red';
-                errorMessage.textContent = 'Please fill in both fields.';
-            }
+        // Toggle Burger Menu
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('active');
         }
 
         // Login an existing user
@@ -152,11 +203,10 @@
             if (inputUsername === storedUsername && inputPassword === storedPassword) {
                 errorMessage.style.color = 'green';
                 errorMessage.textContent = 'Login successful!';
-                // Redirect to the financial page (for now, just show a success message)
-                setTimeout(() => {
-                    alert('Welcome to your financial dashboard!');
-                    // Redirect logic will go here in a real app
-                }, 1000);
+                // Show main menu and hide login form
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainMenu').style.display = 'block';
+                document.querySelector('.burger-menu').style.display = 'block';
             } else {
                 errorMessage.style.color = 'red';
                 errorMessage.textContent = 'Invalid username or password.';
@@ -165,3 +215,4 @@
     </script>
 </body>
 </html>
+
