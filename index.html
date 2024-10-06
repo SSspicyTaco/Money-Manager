@@ -16,7 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Container Styles */
         .container {
             width: 300px;
             padding: 20px;
@@ -31,7 +30,15 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"], input[type="password"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -54,10 +61,6 @@
             background-color: #0056b3;
         }
 
-        p {
-            text-align: center;
-        }
-
         .error-message {
             color: red;
             text-align: center;
@@ -73,7 +76,6 @@
             text-decoration: underline;
         }
 
-        /* Burger Menu */
         .burger-menu {
             position: fixed;
             top: 10px;
@@ -121,13 +123,11 @@
             right: 0;
         }
 
-        /* Main Content */
         .content {
             padding: 20px;
             display: none;
         }
 
-        /* Pages */
         .page {
             display: none;
         }
@@ -136,6 +136,7 @@
             display: block;
         }
 
+        /* Financial Statement */
         #financialStatement {
             margin-top: 20px;
             padding: 10px;
@@ -164,9 +165,21 @@
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 5px;
+            position: relative;
         }
 
-        /* Income and Expense Tracker */
+        .item-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        .edit-button, .delete-button {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        /* Income/Expense Tracker */
         #trackerPage {
             margin-top: 20px;
         }
@@ -198,29 +211,14 @@
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div class="container" id="loginContainer">
-        <h2 id="form-title">Login</h2>
-        <div id="error-message" class="error-message"></div>
-
-        <!-- Login Form -->
-        <div id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Username">
-            <input type="password" id="loginPassword" placeholder="Password">
-            <button onclick="login()">Login</button>
-        </div>
-    </div>
-
     <!-- Main Menu with Burger Menu -->
     <div id="mainMenu" class="content">
-        <!-- Burger Menu -->
         <div class="burger-menu" onclick="toggleMenu()">
             <div></div>
             <div></div>
             <div></div>
         </div>
 
-        <!-- Side Navigation -->
         <nav id="menu">
             <a href="#" onclick="showPage('financialStatementPage')">Financial Statement</a>
             <a href="#" onclick="showPage('wantsPage')">Wants</a>
@@ -231,9 +229,9 @@
         <div id="financialStatementPage" class="page active-page">
             <h2>Financial Statement</h2>
             <div id="financialStatement">
-                <p>Checking Account: $2,500</p>
-                <p>Savings Account: $10,000</p>
-                <p>Investment Account: $5,000</p>
+                <p>Checking Account: $0</p>
+                <p>Savings Account: $0</p>
+                <p>Investment Account: $0</p>
             </div>
         </div>
 
@@ -241,15 +239,21 @@
         <div id="wantsPage" class="page">
             <h2>Wants</h2>
             <ul id="wantsList"></ul>
-            <input type="text" id="wantInput" placeholder="Add an item">
+            <input type="text" id="wantName" placeholder="Item name">
+            <input type="text" id="wantCost" placeholder="Cost">
+            <input type="text" id="wantWebsite" placeholder="Website">
             <button onclick="addWant()">Add Item</button>
         </div>
 
         <!-- Income/Expense Tracker Page -->
         <div id="trackerPage" class="page">
             <h2>Income/Expense Tracker</h2>
-            <input type="text" id="income" placeholder="Enter income">
-            <input type="text" id="expense" placeholder="Enter expense">
+            <input type="text" id="amount" placeholder="Enter amount">
+            <select id="category">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+            </select>
+            <input type="date" id="date">
             <button onclick="addTransaction()">Add Transaction</button>
             <h3>Transactions</h3>
             <ul id="transactions"></ul>
@@ -273,68 +277,84 @@
             toggleMenu();  // Close menu after navigation
         }
 
-        // Login functionality
-        function login() {
-            const storedUsername = localStorage.getItem('username');
-            const storedPassword = localStorage.getItem('password');
-            const inputUsername = document.getElementById('loginUsername').value;
-            const inputPassword = document.getElementById('loginPassword').value;
-            const errorMessage = document.getElementById('error-message');
+        // Wants Page - Add, Edit, and Delete Items
+        let wants = [];
 
-            if (inputUsername === storedUsername && inputPassword === storedPassword) {
-                errorMessage.style.color = 'green';
-                errorMessage.textContent = 'Login successful!';
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('mainMenu').style.display = 'block';
-                document.querySelector('.burger-menu').style.display = 'block';
-            } else {
-                errorMessage.style.color = 'red';
-                errorMessage.textContent = 'Invalid username or password.';
-            }
-        }
-
-        // Add Want functionality
         function addWant() {
-            const wantInput = document.getElementById('wantInput').value;
-            const wantsList = document.getElementById('wantsList');
-            if (wantInput) {
-                const newItem = document.createElement('li');
-                newItem.textContent = wantInput;
-                wantsList.appendChild(newItem);
-                document.getElementById('wantInput').value = '';
+            const wantName = document.getElementById('wantName').value;
+            const wantCost = document.getElementById('wantCost').value;
+            const wantWebsite = document.getElementById('wantWebsite').value;
+
+            if (wantName && wantCost && wantWebsite) {
+                const newItem = { name: wantName, cost: wantCost, website: wantWebsite };
+                wants.push(newItem);
+                displayWants();
+                document.getElementById('wantName').value = '';
+                document.getElementById('wantCost').value = '';
+                document.getElementById('wantWebsite').value = '';
             }
         }
 
-        // Add Transaction (Income or Expense) functionality
+        function displayWants() {
+            const wantsList = document.getElementById('wantsList');
+            wantsList.innerHTML = '';
+            wants.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} - $${item.cost} from <a href="${item.website}" target="_blank">${item.website}</a>
+                                <div class="item-actions">
+                                    <span class="edit-button" onclick="editWant(${index})">Edit</span>
+                                    <span class="delete-button" onclick="deleteWant(${index})">Delete</span>
+                                </div>`;
+                wantsList.appendChild(li);
+            });
+            });
+        }
+
+        function deleteWant(index) {
+            wants.splice(index, 1);
+            displayWants();
+        }
+
+        function editWant(index) {
+            const item = wants[index];
+            document.getElementById('wantName').value = item.name;
+            document.getElementById('wantCost').value = item.cost;
+            document.getElementById('wantWebsite').value = item.website;
+            deleteWant(index); // Remove the old version of the item, user will need to re-submit changes
+        }
+
+        // Income and Expense Tracker
         let netBalance = 0;
+
         function addTransaction() {
-            const income = parseFloat(document.getElementById('income').value);
-            const expense = parseFloat(document.getElementById('expense').value);
+            const amount = parseFloat(document.getElementById('amount').value);
+            const category = document.getElementById('category').value;
+            const date = document.getElementById('date').value;
             const transactionsList = document.getElementById('transactions');
             const summary = document.getElementById('summary');
 
-            if (!isNaN(income)) {
-                netBalance += income;
-                const incomeItem = document.createElement('li');
-                incomeItem.textContent = `Income: +$${income}`;
-                incomeItem.classList.add('income');
-                transactionsList.appendChild(incomeItem);
-                document.getElementById('income').value = '';
-            }
+            if (!isNaN(amount) && date) {
+                const newTransaction = document.createElement('li');
+                if (category === 'Income') {
+                    netBalance += amount;
+                    newTransaction.innerHTML = `Income: +$${amount} on ${date}`;
+                    newTransaction.classList.add('income');
+                } else {
+                    netBalance -= amount;
+                    newTransaction.innerHTML = `Expense: -$${amount} on ${date}`;
+                    newTransaction.classList.add('expense');
+                }
 
-            if (!isNaN(expense)) {
-                netBalance -= expense;
-                const expenseItem = document.createElement('li');
-                expenseItem.textContent = `Expense: -$${expense}`;
-                expenseItem.classList.add('expense');
-                transactionsList.appendChild(expenseItem);
-                document.getElementById('expense').value = '';
-            }
+                transactionsList.appendChild(newTransaction);
+                document.getElementById('amount').value = '';
+                document.getElementById('date').value = '';
 
-            summary.textContent = `Net Balance: $${netBalance}`;
+                summary.textContent = `Net Balance: $${netBalance}`;
+            }
         }
     </script>
 </body>
 </html>
+
 
 
