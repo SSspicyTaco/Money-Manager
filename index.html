@@ -113,6 +113,32 @@
         .debt-tracking {
             margin-top: 20px;
         }
+
+        /* Wants Page */
+        #wantsList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #wantsList li {
+            background-color: #e3e3e3;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .progress-bar {
+            background-color: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            background-color: #007bff;
+            height: 10px;
+            width: 0;
+        }
     </style>
 </head>
 <body>
@@ -129,6 +155,7 @@
         <a href="#" onclick="showPage('transactionsPage')">Transactions</a>
         <a href="#" onclick="showPage('goalsPage')">Goals</a>
         <a href="#" onclick="showPage('debtPage')">Debt Tracking</a>
+        <a href="#" onclick="showPage('wantsPage')">Wants</a>
     </nav>
 
     <!-- Financial Statement Page -->
@@ -194,6 +221,17 @@
         </div>
     </div>
 
+    <!-- Wants Page -->
+    <div id="wantsPage" class="content">
+        <h2>Wants</h2>
+        <ul id="wantsList"></ul>
+        <input type="text" id="wantName" placeholder="Item name">
+        <input type="text" id="wantSource" placeholder="Where it comes from">
+        <input type="number" id="wantCost" placeholder="Cost">
+        <input type="number" id="wantSaved" placeholder="Amount saved">
+        <button onclick="addWant()">Add Item</button>
+    </div>
+
     <script>
         // Toggle Burger Menu
         function toggleMenu() {
@@ -220,6 +258,7 @@
             localStorage.setItem('transactions', JSON.stringify(transactions));
             localStorage.setItem('goals', JSON.stringify(goals));
             localStorage.setItem('debts', JSON.stringify(debts));
+            localStorage.setItem('wants', JSON.stringify(wants));
         }
 
         function loadFromLocalStorage() {
@@ -227,10 +266,12 @@
             transactions = JSON.parse(localStorage.getItem('transactions')) || [];
             goals = JSON.parse(localStorage.getItem('goals')) || [];
             debts = JSON.parse(localStorage.getItem('debts')) || [];
+            wants = JSON.parse(localStorage.getItem('wants')) || [];
             displayAccounts();
             displayTransactions();
             displayGoals();
             displayDebts();
+            displayWants();
         }
 
         // Financial Accounts
@@ -238,6 +279,7 @@
         let transactions = [];
         let goals = [];
         let debts = [];
+        let wants = [];
 
         function addAccount() {
             const accountName = document.getElementById('accountName').value;
@@ -393,6 +435,35 @@
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `${debt.name}: $${debt.amount.toFixed(2)}`;
                 debtList.appendChild(listItem);
+            });
+        }
+
+        // Wants Page
+        function addWant() {
+            const wantName = document.getElementById('wantName').value;
+            const wantSource = document.getElementById('wantSource').value;
+            const wantCost = parseFloat(document.getElementById('wantCost').value);
+            const wantSaved = parseFloat(document.getElementById('wantSaved').value);
+
+            if (wantName && wantSource && !isNaN(wantCost) && !isNaN(wantSaved)) {
+                wants.push({ name: wantName, source: wantSource, cost: wantCost, saved: wantSaved });
+                displayWants();
+                saveToLocalStorage();
+            }
+        }
+
+        function displayWants() {
+            const wantsList = document.getElementById('wantsList');
+            wantsList.innerHTML = '';
+
+            wants.forEach(want => {
+                const listItem = document.createElement('li');
+                const progressPercentage = ((want.saved / want.cost) * 100).toFixed(2);
+                listItem.innerHTML = `${want.name} from ${want.source}: $${want.saved.toFixed(2)} / $${want.cost.toFixed(2)} (${progressPercentage}% saved)
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: ${progressPercentage}%"></div>
+                                    </div>`;
+                wantsList.appendChild(listItem);
             });
         }
     </script>
