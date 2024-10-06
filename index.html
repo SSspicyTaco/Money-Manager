@@ -17,12 +17,10 @@
         }
 
         .container {
-            width: 300px;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
             padding: 20px;
-            margin: 100px auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
@@ -30,7 +28,7 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"], input[type="number"], input[type="date"] {
+        input[type="text"], input[type="number"], input[type="password"], input[type="date"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -61,80 +59,31 @@
             background-color: #0056b3;
         }
 
+        #transactions-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        #transactions-filter select, #transactions-filter input {
+            width: 48%;
+        }
+
         .error-message {
             color: red;
             text-align: center;
             margin-bottom: 10px;
         }
 
-        .toggle-link {
-            color: #007BFF;
-            cursor: pointer;
-        }
-
-        .toggle-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Burger Menu */
-        .burger-menu {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            display: none;
-            z-index: 1000;
-        }
-
-        .burger-menu div {
-            width: 30px;
-            height: 3px;
-            background-color: black;
-            margin: 5px 0;
-        }
-
-        nav {
-            position: fixed;
-            right: -250px;
-            top: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            transition: right 0.3s ease;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            padding-top: 60px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            background-color: #444;
-            border-bottom: 1px solid #555;
-        }
-
-        nav a:hover {
-            background-color: #555;
-        }
-
-        nav.active {
-            right: 0;
-        }
-
-        .content {
-            padding: 20px;
-            display: none;
-        }
-
-        .page {
-            display: none;
-        }
-
-        .active-page {
-            display: block;
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            #transactions-filter {
+                flex-direction: column;
+            }
+            #transactions-filter select, #transactions-filter input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
 
         /* Financial Statement */
@@ -146,36 +95,25 @@
             background-color: #f9f9f9;
         }
 
-        #financialStatement p {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .account-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            background-color: #e3e3e3;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .account-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        /* Wants Page */
-        #wantsPage {
+        #accountSelect {
+            width: 100%;
             margin-top: 20px;
         }
 
-        #wantsList {
+        /* Advanced Categorization System */
+        #categorySelect {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        /* Goals Page */
+        #goalList {
             list-style-type: none;
             padding: 0;
         }
 
-        #wantsList li {
+        #goalList li {
             background-color: #e3e3e3;
             margin-bottom: 10px;
             padding: 10px;
@@ -183,283 +121,264 @@
             position: relative;
         }
 
-        .item-actions {
-            position: absolute;
-            right: 10px;
-            top: 10px;
+        /* Graph */
+        #chartContainer {
+            margin: 20px 0;
         }
 
-        .edit-button, .delete-button {
-            margin-left: 5px;
-            cursor: pointer;
-        }
-
-        /* Income/Expense Tracker */
-        #trackerPage {
+        /* Debt Tracking */
+        .debt-tracking {
             margin-top: 20px;
-        }
-
-        #transactions {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #transactions li {
-            background-color: #f2f2f2;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .income {
-            color: green;
-        }
-
-        .expense {
-            color: red;
-        }
-
-        .summary {
-            margin-top: 20px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div class="container" id="loginContainer">
-        <h2 id="form-title">Login</h2>
-        <div id="error-message" class="error-message"></div>
+    <div class="container">
+        <h2>Money Management Dashboard</h2>
 
-        <!-- Login Form -->
-        <div id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Username">
-            <input type="password" id="loginPassword" placeholder="Password">
-            <button onclick="login()">Login</button>
-        </div>
-    </div>
-
-    <!-- Main Menu with Burger Menu -->
-    <div id="mainMenu" class="content">
-        <div class="burger-menu" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
+        <!-- Financial Statement -->
+        <div id="financialStatement">
+            <h3>Your Accounts</h3>
+            <div id="accountsList"></div>
+            <input type="text" id="accountName" placeholder="Account name">
+            <input type="number" id="accountBalance" placeholder="Initial balance">
+            <button onclick="addAccount()">Add Account</button>
         </div>
 
-        <nav id="menu">
-            <a href="#" onclick="showPage('financialStatementPage')">Financial Statement</a>
-            <a href="#" onclick="showPage('wantsPage')">Wants</a>
-            <a href="#" onclick="showPage('trackerPage')">Income/Expense Tracker</a>
-        </nav>
-
-        <!-- Financial Statement Page -->
-        <div id="financialStatementPage" class="page active-page">
-            <h2>Financial Statement</h2>
-            <div id="financialStatement">
-                <div id="accountsList"></div>
-                <input type="text" id="accountName" placeholder="Account name">
-                <input type="number" id="accountBalance" placeholder="Initial balance">
-                <button onclick="addAccount()">Add Account</button>
-            </div>
+        <!-- Graph -->
+        <div id="chartContainer">
+            <h3>Account Overview</h3>
+            <canvas id="balanceChart"></canvas>
         </div>
 
-        <!-- Wants Page -->
-        <div id="wantsPage" class="page">
-            <h2>Wants</h2>
-            <ul id="wantsList"></ul>
-            <input type="text" id="wantName" placeholder="Item name">
-            <input type="text" id="wantCost" placeholder="Cost">
-            <input type="text" id="wantWebsite" placeholder="Website">
-            <button onclick="addWant()">Add Item</button>
-        </div>
-
-        <!-- Income/Expense Tracker Page -->
-        <div id="trackerPage" class="page">
-            <h2>Income/Expense Tracker</h2>
-            <select id="accountSelect"></select>
-            <input type="text" id="amount" placeholder="Enter amount">
-            <select id="category">
+        <!-- Filter for Transactions -->
+        <div id="transactions-filter">
+            <select id="filterCategory">
+                <option value="">Select Category</option>
                 <option value="Income">Income</option>
                 <option value="Expense">Expense</option>
             </select>
-            <input type="date" id="date">
-            <button onclick="addTransaction()">Add Transaction</button>
-            <h3>Transactions</h3>
-            <ul id="transactions"></ul>
-            <p class="summary" id="summary">Net Balance: $0</p>
+            <input type="date" id="filterDate">
+            <button onclick="applyFilter()">Filter</button>
+        </div>
+
+        <!-- Income/Expense Tracker -->
+        <h3>Income/Expense Tracker</h3>
+        <select id="accountSelect"></select>
+        <input type="text" id="amount" placeholder="Enter amount">
+        <select id="categorySelect">
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+        </select>
+        <input type="date" id="date">
+        <button onclick="addTransaction()">Add Transaction</button>
+        <ul id="transactions"></ul>
+
+        <!-- Goals Page -->
+        <h3>Goals</h3>
+        <ul id="goalList"></ul>
+        <input type="text" id="goalName" placeholder="Goal name">
+        <input type="number" id="goalTarget" placeholder="Target amount">
+        <input type="number" id="goalCurrent" placeholder="Current amount">
+        <button onclick="addGoal()">Add Goal</button>
+
+        <!-- Debt Tracking -->
+        <div class="debt-tracking">
+            <h3>Debt Tracking</h3>
+            <ul id="debtList"></ul>
+            <input type="text" id="debtName" placeholder="Debt name">
+            <input type="number" id="debtAmount" placeholder="Debt amount">
+            <button onclick="addDebt()">Add Debt</button>
         </div>
     </div>
 
     <script>
-        // Toggle Burger Menu
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('active');
+        // Data Persistence
+        window.onload = function() {
+            loadFromLocalStorage();
+        };
+
+        function saveToLocalStorage() {
+            localStorage.setItem('accounts', JSON.stringify(accounts));
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('goals', JSON.stringify(goals));
+            localStorage.setItem('debts', JSON.stringify(debts));
         }
 
-        // Show the corresponding page
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active-page');
-            });
-            document.getElementById(pageId).classList.add('active-page');
-            toggleMenu();  // Close menu after navigation
+        function loadFromLocalStorage() {
+            accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+            transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            goals = JSON.parse(localStorage.getItem('goals')) || [];
+            debts = JSON.parse(localStorage.getItem('debts')) || [];
+            displayAccounts();
+            displayTransactions();
+            displayGoals();
+            displayDebts();
         }
 
-        // Login System
-        function login() {
-            const storedUsername = localStorage.getItem('username');
-            const storedPassword = localStorage.getItem('password');
-            const inputUsername = document.getElementById('loginUsername').value;
-            const inputPassword = document.getElementById('loginPassword').value;
-            const errorMessage = document.getElementById('error-message');
-
-            if (inputUsername === storedUsername && inputPassword === storedPassword) {
-                errorMessage.style.color = 'green';
-                errorMessage.textContent = 'Login successful!';
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('mainMenu').style.display = 'block';
-                document.querySelector('.burger-menu').style.display = 'block';
-            } else {
-                errorMessage.style.color = 'red';
-                errorMessage.textContent = 'Invalid username or password.';
-            }
-        }
-
-        // Accounts Management
+        // Financial Accounts
         let accounts = [];
+        let transactions = [];
+        let goals = [];
+        let debts = [];
 
         function addAccount() {
             const accountName = document.getElementById('accountName').value;
             const accountBalance = parseFloat(document.getElementById('accountBalance').value);
-
             if (accountName && !isNaN(accountBalance)) {
-                const newAccount = { name: accountName, balance: accountBalance };
-                accounts.push(newAccount);
+                accounts.push({ name: accountName, balance: accountBalance });
                 displayAccounts();
-                document.getElementById('accountName').value = '';
-                document.getElementById('accountBalance').value = '';
-                updateAccountSelect();
+                saveToLocalStorage();
             }
         }
 
         function displayAccounts() {
             const accountsList = document.getElementById('accountsList');
-            accountsList.innerHTML = '';
-            accounts.forEach((account, index) => {
-                const div = document.createElement('div');
-                div.classList.add('account-item');
-                div.innerHTML = `<span>${account.name}: $${account.balance.toFixed(2)}</span>
-                                <div class="account-actions">
-                                    <button onclick="editAccount(${index})">Edit</button>
-                                    <button onclick="deleteAccount(${index})">Delete</button>
-                                </div>`;
-                accountsList.appendChild(div);
-            });
-        }
-
-        function deleteAccount(index) {
-            accounts.splice(index, 1);
-            displayAccounts();
-            updateAccountSelect();
-        }
-
-        function editAccount(index) {
-            const account = accounts[index];
-            document.getElementById('accountName').value = account.name;
-            document.getElementById('accountBalance').value = account.balance;
-            deleteAccount(index); // Remove the old version of the account, user will need to re-submit changes
-        }
-
-        // Update the account selection in the Income/Expense Tracker
-        function updateAccountSelect() {
             const accountSelect = document.getElementById('accountSelect');
+            accountsList.innerHTML = '';
             accountSelect.innerHTML = '';
+
             accounts.forEach((account, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = account.name;
-                accountSelect.appendChild(option);
+                accountsList.innerHTML += `<p>${account.name}: $${account.balance.toFixed(2)}</p>`;
+                accountSelect.innerHTML += `<option value="${index}">${account.name}</option>`;
+            });
+
+            // Update the graph
+            updateGraph();
+        }
+
+        // Graph for Account Balances
+        function updateGraph() {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            const labels = accounts.map(account => account.name);
+            const data = accounts.map(account => account.balance);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Account Balances',
+                        data: data,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
             });
         }
 
-        // Wants Page - Add, Edit, and Delete Items
-        let wants = [];
-
-        function addWant() {
-            const wantName = document.getElementById('wantName').value;
-            const wantCost = document.getElementById('wantCost').value;
-            const wantWebsite = document.getElementById('wantWebsite').value;
-
-            if (wantName && wantCost && wantWebsite) {
-                const newItem = { name: wantName, cost: wantCost, website: wantWebsite };
-                wants.push(newItem);
-                displayWants();
-                document.getElementById('wantName').value = '';
-                document.getElementById('wantCost').value = '';
-                document.getElementById('wantWebsite').value = '';
-            }
-        }
-
-        function displayWants() {
-            const wantsList = document.getElementById('wantsList');
-            wantsList.innerHTML = '';
-            wants.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `${item.name} - $${item.cost} from <a href="${item.website}" target="_blank">${item.website}</a>
-                                <div class="item-actions">
-                                    <span class="edit-button" onclick="editWant(${index})">Edit</span>
-                                    <span class="delete-button" onclick="deleteWant(${index})">Delete</span>
-                                </div>`;
-                wantsList.appendChild(li);
-            });
-        }
-
-        function deleteWant(index) {
-            wants.splice(index, 1);
-            displayWants();
-        }
-
-        function editWant(index) {
-            const item = wants[index];
-            document.getElementById('wantName').value = item.name;
-            document.getElementById('wantCost').value = item.cost;
-            document.getElementById('wantWebsite').value = item.website;
-            deleteWant(index); // Remove the old version of the item, user will need to re-submit changes
-        }
-
-        // Income and Expense Tracker
-        let netBalance = 0;
-
+        // Transactions
         function addTransaction() {
             const amount = parseFloat(document.getElementById('amount').value);
-            const category = document.getElementById('category').value;
+            const category = document.getElementById('categorySelect').value;
             const date = document.getElementById('date').value;
             const selectedAccountIndex = document.getElementById('accountSelect').value;
-            const transactionsList = document.getElementById('transactions');
-            const summary = document.getElementById('summary');
+            const account = accounts[selectedAccountIndex];
 
-            if (!isNaN(amount) && date && selectedAccountIndex !== '') {
-                const selectedAccount = accounts[selectedAccountIndex];
-                const newTransaction = document.createElement('li');
+            if (!isNaN(amount) && date && account) {
+                const transaction = { amount, category, date, accountName: account.name };
 
                 if (category === 'Income') {
-                    selectedAccount.balance += amount;
-                    newTransaction.innerHTML = `Income: +$${amount.toFixed(2)} on ${date} (to ${selectedAccount.name})`;
-                    newTransaction.classList.add('income');
+                    account.balance += amount;
                 } else {
-                    selectedAccount.balance -= amount;
-                    newTransaction.innerHTML = `Expense: -$${amount.toFixed(2)} on ${date} (from ${selectedAccount.name})`;
-                    newTransaction.classList.add('expense');
+                    account.balance -= amount;
                 }
 
-                transactionsList.appendChild(newTransaction);
-                document.getElementById('amount').value = '';
-                document.getElementById('date').value = '';
-                displayAccounts(); // Update the account balances
+                transactions.push(transaction);
+                displayAccounts();
+                displayTransactions();
+                saveToLocalStorage();
             }
         }
+
+        function displayTransactions() {
+            const transactionsList = document.getElementById('transactions');
+            transactionsList.innerHTML = '';
+
+            transactions.forEach(transaction => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${transaction.category}: $${transaction.amount.toFixed(2)} on ${transaction.date} (${transaction.accountName})`;
+                transactionsList.appendChild(listItem);
+            });
+        }
+
+        // Filtering Transactions
+        function applyFilter() {
+            const filterCategory = document.getElementById('filterCategory').value;
+            const filterDate = document.getElementById('filterDate').value;
+
+            const filteredTransactions = transactions.filter(transaction => {
+                return (filterCategory === '' || transaction.category === filterCategory) &&
+                    (filterDate === '' || transaction.date === filterDate);
+            });
+
+            const transactionsList = document.getElementById('transactions');
+            transactionsList.innerHTML = '';
+
+            filteredTransactions.forEach(transaction => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${transaction.category}: $${transaction.amount.toFixed(2)} on ${transaction.date} (${transaction.accountName})`;
+                transactionsList.appendChild(listItem);
+            });
+        }
+
+        // Goals
+        function addGoal() {
+            const goalName = document.getElementById('goalName').value;
+            const goalTarget = parseFloat(document.getElementById('goalTarget').value);
+            const goalCurrent = parseFloat(document.getElementById('goalCurrent').value);
+
+            if (goalName && !isNaN(goalTarget) && !isNaN(goalCurrent)) {
+                goals.push({ name: goalName, target: goalTarget, current: goalCurrent });
+                displayGoals();
+                saveToLocalStorage();
+            }
+        }
+
+        function displayGoals() {
+            const goalList = document.getElementById('goalList');
+            goalList.innerHTML = '';
+
+            goals.forEach(goal => {
+                const listItem = document.createElement('li');
+                const percentage = ((goal.current / goal.target) * 100).toFixed(2);
+                listItem.innerHTML = `${goal.name}: $${goal.current.toFixed(2)} / $${goal.target.toFixed(2)} (${percentage}% towards goal)`;
+                goalList.appendChild(listItem);
+            });
+        }
+
+        // Debt Tracking
+        function addDebt() {
+            const debtName = document.getElementById('debtName').value;
+            const debtAmount = parseFloat(document.getElementById('debtAmount').value);
+
+            if (debtName && !isNaN(debtAmount)) {
+                debts.push({ name: debtName, amount: debtAmount });
+                displayDebts();
+                saveToLocalStorage();
+            }
+        }
+
+        function displayDebts() {
+            const debtList = document.getElementById('debtList');
+            debtList.innerHTML = '';
+
+            debts.forEach(debt => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${debt.name}: $${debt.amount.toFixed(2)}`;
+                debtList.appendChild(listItem);
+            });
+        }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
