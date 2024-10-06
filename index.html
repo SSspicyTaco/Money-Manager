@@ -3,397 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Manager</title>
+    <title>Money Management Site</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Basic Reset */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            box-sizing: border-box;
         }
 
-        header {
-            background-color: #4CAF50;
-            color: #fff;
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Burger Menu */
+        .burger-menu {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .burger-menu div {
+            width: 30px;
+            height: 3px;
+            background-color: black;
+            margin: 5px 0;
+        }
+
+        nav {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            transition: left 0.3s ease;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            padding-top: 60px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 15px;
             text-align: center;
-            padding: 1rem 0;
+            background-color: #444;
+            border-bottom: 1px solid #555;
         }
 
-        main {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        nav a:hover {
+            background-color: #555;
         }
 
-        h2 {
-            margin-top: 0;
+        nav.active {
+            left: 0;
         }
 
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .content {
+            padding: 20px;
         }
 
-        label {
-            grid-column: span 2;
+        /* Login Page */
+        #loginPage, #financialPage, #wantsPage, #trackerPage {
+            display: none;
         }
 
-        input, select, button {
-            padding: 0.5rem;
-            font-size: 1rem;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        .active-page {
+            display: block;
+        }
+
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
         }
 
         button {
-            background-color: #4CAF50;
-            color: #fff;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            background-color: #f9f9f9;
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            position: relative;
-        }
-
-        #summary p {
-            font-weight: bold;
-        }
-
-        #login-form {
-            display: none;
-        }
-
-        #app {
-            display: none;
-        }
-
-        .account-actions {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            width: 80px;
-        }
-
-        .bill-info {
-            font-size: 0.9rem;
-            color: #555;
+        /* Simple Styling */
+        h2 {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Finance Manager</h1>
-    </header>
-    <main>
-        <section id="login-form">
+    <!-- Burger Menu -->
+    <div class="burger-menu" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav id="menu">
+        <a href="#" onclick="showPage('loginPage')">Login</a>
+        <a href="#" onclick="showPage('financialPage')">Financial Statement</a>
+        <a href="#" onclick="showPage('wantsPage')">Wants</a>
+        <a href="#" onclick="showPage('trackerPage')">Income/Expense Tracker</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Login Page -->
+        <div id="loginPage" class="active-page">
             <h2>Login</h2>
-            <form id="login">
-                <label for="username">Username:</label>
-                <input type="text" id="username" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" required>
-                <button type="submit">Login</button>
-                <button type="button" id="register">Register</button>
-            </form>
-        </section>
-        <section id="app">
-            <section id="add-account">
-                <h2>Add Account</h2>
-                <form id="account-form">
-                    <label for="account-name">Account Name:</label>
-                    <input type="text" id="account-name" required>
-                    <button type="submit">Add Account</button>
-                </form>
-            </section>
-            <section id="add-transaction">
-                <h2>Add Transaction</h2>
-                <form id="transaction-form">
-                    <label for="account">Account:</label>
-                    <select id="account" required></select>
-                    <label for="type">Type:</label>
-                    <select id="type" required>
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                    </select>
-                    <label for="category">Category:</label>
-                    <select id="category" required>
-                        <option value="salary">Salary</option>
-                        <option value="business">Business</option>
-                        <option value="investment">Investment</option>
-                        <option value="gift">Gift</option>
-                        <option value="other-income">Other Income</option>
-                        <option value="rent">Rent</option>
-                        <option value="groceries">Groceries</option>
-                        <option value="utilities">Utilities</option>
-                        <option value="entertainment">Entertainment</option>
-                        <option value="health">Health</option>
-                        <option value="travel">Travel</option>
-                        <option value="education">Education</option>
-                        <option value="other-expense">Other Expense</option>
-                    </select>
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" required>
-                    <label for="amount">Amount:</label>
-                    <input type="number" id="amount" step="0.01" required>
-                    <label for="description">Description:</label>
-                    <input type="text" id="description" required>
-                    <button type="submit">Add</button>
-                </form>
-            </section>
-            <section id="accounts">
-                <h2>Accounts</h2>
-                <ul id="account-list"></ul>
-            </section>
-            <section id="summary">
-                <h2>Summary</h2>
-                <p>Total Income: <span id="total-income">0</span></p>
-                <p>Total Expense: <span id="total-expense">0</span></p>
-                <p>Balance: <span id="balance">0</span></p>
-            </section>
-            <section id="add-bill">
-                <h2>Add Bill</h2>
-                <form id="bill-form">
-                    <label for="bill-account">Account:</label>
-                    <select id="bill-account" required></select>
-                    <label for="bill-amount">Amount:</label>
-                    <input type="number" id="bill-amount" step="0.01" required>
-                    <label for="bill-date">Date:</label>
-                    <input type="date" id="bill-date" required>
-                    <label for="bill-frequency">Recurring:</label>
-                    <select id="bill-frequency" required>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                    <button type="submit">Add Bill</button>
-                </form>
-                <h3>Upcoming Bills</h3>
-                <ul id="bill-list"></ul>
-            </section>
-        </section>
-    </main>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <!-- Financial Statement Page -->
+        <div id="financialPage">
+            <h2>Financial Statement</h2>
+            <p>Your financial summary will appear here.</p>
+        </div>
+
+        <!-- Wants Page -->
+        <div id="wantsPage">
+            <h2>Wants</h2>
+            <ul id="wantsList"></ul>
+            <input type="text" id="wantInput" placeholder="Add an item">
+            <button onclick="addWant()">Add Item</button>
+        </div>
+
+        <!-- Income/Expense Tracker Page -->
+        <div id="trackerPage">
+            <h2>Income and Expense Tracker</h2>
+            <input type="text" id="income" placeholder="Enter income">
+            <input type="text" id="expense" placeholder="Enter expense">
+            <button onclick="addTransaction()">Add Transaction</button>
+            <h3>Summary</h3>
+            <p id="summary"></p>
+        </div>
+    </div>
+
     <script>
-        let currentUser = null;
-        let users = JSON.parse(localStorage.getItem('users')) || {};
+        // Toggle Burger Menu
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('active');
+        }
 
-        document.getElementById('login').addEventListener('submit', handleLogin);
-        document.getElementById('register').addEventListener('click', handleRegister);
-        document.getElementById('account-form').addEventListener('submit', addAccount);
-        document.getElementById('transaction-form').addEventListener('submit', addTransaction);
-        document.getElementById('bill-form').addEventListener('submit', addBill);
+        // Navigation between pages
+        function showPage(pageId) {
+            document.querySelectorAll('.content > div').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+        }
 
-        function handleLogin(event) {
-            event.preventDefault();
+        // Local Storage - Login
+        function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            if (users[username] && users[username].password === password) {
-                currentUser = username;
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                loadUserData();
-            } else {
-                alert('Invalid login credentials');
-            }
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            alert('Login Successful!');
+            showPage('financialPage');
         }
 
-        function handleRegister() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            if (!users[username]) {
-                users[username] = { password, accounts: {}, bills: [] };
-                localStorage.setItem('users', JSON.stringify(users));
-                alert('User registered successfully');
-            } else {
-                alert('Username already exists');
-            }
+        // Adding Wants
+        function addWant() {
+            const wantInput = document.getElementById('wantInput').value;
+            const wantsList = document.getElementById('wantsList');
+            const newItem = document.createElement('li');
+            newItem.textContent = wantInput;
+            wantsList.appendChild(newItem);
         }
 
-        function addAccount(event) {
-            event.preventDefault();
-            const accountName = document.getElementById('account-name').value;
-            if (users[currentUser].accounts[accountName]) {
-                alert('Account already exists');
-                return;
-            }
-            users[currentUser].accounts[accountName] = { transactions: [], totalIncome: 0, totalExpense: 0, balance: 0 };
-            localStorage.setItem('users', JSON.stringify(users));
-            updateAccountList();
-            updateAccountDropdowns();
+        // Adding Income and Expenses
+        function addTransaction() {
+            const income = parseFloat(document.getElementById('income').value);
+            const expense = parseFloat(document.getElementById('expense').value);
+            let summary = document.getElementById('summary');
+            let total = income - expense;
+            summary.textContent = 'Net Balance: ' + total;
         }
-
-        function addTransaction(event) {
-            event.preventDefault();
-            const account = document.getElementById('account').value;
-            const type = document.getElementById('type').value;
-            const category = document.getElementById('category').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const description = document.getElementById('description').value;
-            const date = document.getElementById('date').value;
-
-            const transaction = { type, category, amount, description, date };
-            users[currentUser].accounts[account].transactions.push(transaction);
-
-            if (type === 'income') {
-                users[currentUser].accounts[account].totalIncome += amount;
-            } else {
-                users[currentUser].accounts[account].totalExpense += amount;
-            }
-            users[currentUser].accounts[account].balance = users[currentUser].accounts[account].totalIncome - users[currentUser].accounts[account].totalExpense;
-
-            localStorage.setItem('users', JSON.stringify(users));
-            updateTransactionList(account);
-            updateSummary(account);
-        }
-
-        function addBill(event) {
-            event.preventDefault();
-            const account = document.getElementById('bill-account').value;
-            const amount = parseFloat(document.getElementById('bill-amount').value);
-            const date = document.getElementById('bill-date').value;
-            const frequency = document.getElementById('bill-frequency').value;
-
-            const bill = { account, amount, date, frequency };
-            users[currentUser].bills.push(bill);
-
-            localStorage.setItem('users', JSON.stringify(users));
-            updateBillList();
-        }
-
-        function updateAccountList() {
-            const accountList = document.getElementById('account-list');
-            accountList.innerHTML = '';
-
-            Object.keys(users[currentUser].accounts).forEach(account => {
-                const li = document.createElement('li');
-                li.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
-                const actions = document.createElement('select');
-                actions.className = 'account-actions';
-                actions.innerHTML = `
-                    <option value="" disabled selected>Actions</option>
-                    <option value="rename">Rename</option>
-                    <option value="delete">Delete</option>
-                `;
-                actions.onchange = (event) => handleAccountAction(event, account);
-                li.appendChild(actions);
-                accountList.appendChild(li);
-            });
-        }
-
-        function handleAccountAction(event, account) {
-            const action = event.target.value;
-            if (action === 'rename') {
-                renameAccount(account);
-            } else if (action === 'delete') {
-                deleteAccount(account);
-            }
-        }
-
-        function updateAccountDropdowns() {
-            const accountDropdown = document.getElementById('account');
-            const billAccountDropdown = document.getElementById('bill-account');
-            accountDropdown.innerHTML = '';
-            billAccountDropdown.innerHTML = '';
-
-            Object.keys(users[currentUser].accounts).forEach(account => {
-                const option = document.createElement('option');
-                option.value = account;
-                option.innerText = account;
-                accountDropdown.appendChild(option);
-
-                const billOption = document.createElement('option');
-                billOption.value = account;
-                billOption.innerText = account;
-                billAccountDropdown.appendChild(billOption);
-            });
-        }
-
-        function updateTransactionList(account) {
-            const transactionList = document.createElement('ul');
-            transactionList.innerHTML = '';
-
-            users[currentUser].accounts[account].transactions.forEach(transaction => {
-                const li = document.createElement('li');
-                li.innerText = `${transaction.date} - ${transaction.type} (${transaction.category}) - $${transaction.amount.toFixed(2)}: ${transaction.description}`;
-                transactionList.appendChild(li);
-            });
-
-            const accountList = document.getElementById('account-list');
-            accountList.innerHTML = '';
-            const accountItem = document.createElement('li');
-            accountItem.innerText = `${account} - Balance: $${users[currentUser].accounts[account].balance.toFixed(2)}`;
-            accountItem.appendChild(transactionList);
-            accountList.appendChild(accountItem);
-        }
-
-        function updateSummary(account) {
-            document.getElementById('total-income').innerText = users[currentUser].accounts[account].totalIncome.toFixed(2);
-            document.getElementById('total-expense').innerText = users[currentUser].accounts[account].totalExpense.toFixed(2);
-            document.getElementById('balance').innerText = users[currentUser].accounts[account].balance.toFixed(2);
-        }
-
-        function updateBillList() {
-            const billList = document.getElementById('bill-list');
-            billList.innerHTML = '';
-
-            users[currentUser].bills.forEach(bill => {
-                const li = document.createElement('li');
-                li.innerText = `Account: ${bill.account} - Amount: $${bill.amount.toFixed(2)} - Date: ${bill.date} - Frequency: ${bill.frequency}`;
-                li.className = 'bill-info';
-                billList.appendChild(li);
-            });
-        }
-
-        function loadUserData() {
-            updateAccountList();
-            updateAccountDropdowns();
-            updateBillList();
-        }
-
-        function renameAccount(account) {
-            const newName = prompt('Enter new name for the account:', account);
-            if (newName && !users[currentUser].accounts[newName]) {
-                users[currentUser].accounts[newName] = users[currentUser].accounts[account];
-                delete users[currentUser].accounts[account];
-                localStorage.setItem('users', JSON.stringify(users));
-                updateAccountList();
-                updateAccountDropdowns();
-            } else {
-                alert('Invalid or duplicate account name');
-            }
-        }
-
-        function deleteAccount(account) {
-            if (confirm(`Are you sure you want to delete the account "${account}"? This action cannot be undone.`)) {
-                delete users[currentUser].accounts[account];
-                localStorage.setItem('users', JSON.stringify(users));
-                updateAccountList();
-                updateAccountDropdowns();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('login-form').style.display = 'block';
-        });
     </script>
 </body>
 </html>
