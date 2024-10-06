@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Money Management Site</title>
+    <title>Money Management - Login</title>
     <style>
         /* Basic Reset */
         * {
@@ -14,183 +14,153 @@
 
         body {
             font-family: Arial, sans-serif;
-        }
-
-        /* Burger Menu */
-        .burger-menu {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        .burger-menu div {
-            width: 30px;
-            height: 3px;
-            background-color: black;
-            margin: 5px 0;
-        }
-
-        nav {
-            position: fixed;
-            left: -250px;
-            top: 0;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            transition: left 0.3s ease;
-            z-index: 999;
             display: flex;
-            flex-direction: column;
-            padding-top: 60px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
         }
 
-        nav a {
-            text-decoration: none;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            background-color: #444;
-            border-bottom: 1px solid #555;
-        }
-
-        nav a:hover {
-            background-color: #555;
-        }
-
-        nav.active {
-            left: 0;
-        }
-
-        .content {
+        .container {
+            width: 300px;
             padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Login Page */
-        #loginPage, #financialPage, #wantsPage, #trackerPage {
-            display: none;
-        }
-
-        .active-page {
-            display: block;
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         input[type="text"], input[type="password"] {
+            width: 100%;
             padding: 10px;
             margin: 10px 0;
-            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
         button {
+            width: 100%;
             padding: 10px;
             background-color: #007BFF;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        /* Simple Styling */
-        h2 {
+        p {
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
             margin-bottom: 10px;
+        }
+
+        .toggle-link {
+            color: #007BFF;
+            cursor: pointer;
+        }
+
+        .toggle-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Burger Menu -->
-    <div class="burger-menu" onclick="toggleMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
+    <div class="container">
+        <h2 id="form-title">Login</h2>
+        <div id="error-message" class="error-message"></div>
 
-    <!-- Side Navigation -->
-    <nav id="menu">
-        <a href="#" onclick="showPage('loginPage')">Login</a>
-        <a href="#" onclick="showPage('financialPage')">Financial Statement</a>
-        <a href="#" onclick="showPage('wantsPage')">Wants</a>
-        <a href="#" onclick="showPage('trackerPage')">Income/Expense Tracker</a>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="content">
-        <!-- Login Page -->
-        <div id="loginPage" class="active-page">
-            <h2>Login</h2>
-            <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
             <button onclick="login()">Login</button>
+            <p>Don't have an account? <span class="toggle-link" onclick="toggleForms()">Register</span></p>
         </div>
 
-        <!-- Financial Statement Page -->
-        <div id="financialPage">
-            <h2>Financial Statement</h2>
-            <p>Your financial summary will appear here.</p>
-        </div>
-
-        <!-- Wants Page -->
-        <div id="wantsPage">
-            <h2>Wants</h2>
-            <ul id="wantsList"></ul>
-            <input type="text" id="wantInput" placeholder="Add an item">
-            <button onclick="addWant()">Add Item</button>
-        </div>
-
-        <!-- Income/Expense Tracker Page -->
-        <div id="trackerPage">
-            <h2>Income and Expense Tracker</h2>
-            <input type="text" id="income" placeholder="Enter income">
-            <input type="text" id="expense" placeholder="Enter expense">
-            <button onclick="addTransaction()">Add Transaction</button>
-            <h3>Summary</h3>
-            <p id="summary"></p>
+        <!-- Registration Form -->
+        <div id="registerForm" style="display: none;">
+            <input type="text" id="registerUsername" placeholder="Choose Username">
+            <input type="password" id="registerPassword" placeholder="Choose Password">
+            <button onclick="register()">Register</button>
+            <p>Already have an account? <span class="toggle-link" onclick="toggleForms()">Login</span></p>
         </div>
     </div>
 
     <script>
-        // Toggle Burger Menu
-        function toggleMenu() {
-            document.getElementById('menu').classList.toggle('active');
+        // Toggle between login and registration forms
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const formTitle = document.getElementById('form-title');
+            const errorMessage = document.getElementById('error-message');
+
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                formTitle.textContent = 'Login';
+                errorMessage.textContent = '';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                formTitle.textContent = 'Register';
+                errorMessage.textContent = '';
+            }
         }
 
-        // Navigation between pages
-        function showPage(pageId) {
-            document.querySelectorAll('.content > div').forEach(page => {
-                page.classList.remove('active-page');
-            });
-            document.getElementById(pageId).classList.add('active-page');
+        // Register a new user
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (username && password) {
+                // Store user credentials in localStorage
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+
+                // Show success message and redirect to login form
+                errorMessage.style.color = 'green';
+                errorMessage.textContent = 'Registration successful! Please login.';
+                toggleForms();
+            } else {
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = 'Please fill in both fields.';
+            }
         }
 
-        // Local Storage - Login
+        // Login an existing user
         function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-            alert('Login Successful!');
-            showPage('financialPage');
-        }
+            const storedUsername = localStorage.getItem('username');
+            const storedPassword = localStorage.getItem('password');
+            const inputUsername = document.getElementById('loginUsername').value;
+            const inputPassword = document.getElementById('loginPassword').value;
+            const errorMessage = document.getElementById('error-message');
 
-        // Adding Wants
-        function addWant() {
-            const wantInput = document.getElementById('wantInput').value;
-            const wantsList = document.getElementById('wantsList');
-            const newItem = document.createElement('li');
-            newItem.textContent = wantInput;
-            wantsList.appendChild(newItem);
-        }
-
-        // Adding Income and Expenses
-        function addTransaction() {
-            const income = parseFloat(document.getElementById('income').value);
-            const expense = parseFloat(document.getElementById('expense').value);
-            let summary = document.getElementById('summary');
-            let total = income - expense;
-            summary.textContent = 'Net Balance: ' + total;
+            if (inputUsername === storedUsername && inputPassword === storedPassword) {
+                errorMessage.style.color = 'green';
+                errorMessage.textContent = 'Login successful!';
+                // Redirect to the financial page (for now, just show a success message)
+                setTimeout(() => {
+                    alert('Welcome to your financial dashboard!');
+                    // Redirect logic will go here in a real app
+                }, 1000);
+            } else {
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = 'Invalid username or password.';
+            }
         }
     </script>
 </body>
