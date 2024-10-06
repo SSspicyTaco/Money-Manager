@@ -213,6 +213,19 @@
     </style>
 </head>
 <body>
+    <!-- Login Page -->
+    <div class="container" id="loginContainer">
+        <h2 id="form-title">Login</h2>
+        <div id="error-message" class="error-message"></div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+
     <!-- Main Menu with Burger Menu -->
     <div id="mainMenu" class="content">
         <div class="burger-menu" onclick="toggleMenu()">
@@ -277,6 +290,26 @@
             });
             document.getElementById(pageId).classList.add('active-page');
             toggleMenu();  // Close menu after navigation
+        }
+
+        // Login System
+        function login() {
+            const storedUsername = localStorage.getItem('username');
+            const storedPassword = localStorage.getItem('password');
+            const inputUsername = document.getElementById('loginUsername').value;
+            const inputPassword = document.getElementById('loginPassword').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (inputUsername === storedUsername && inputPassword === storedPassword) {
+                errorMessage.style.color = 'green';
+                errorMessage.textContent = 'Login successful!';
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainMenu').style.display = 'block';
+                document.querySelector('.burger-menu').style.display = 'block';
+            } else {
+                errorMessage.style.color = 'red';
+                errorMessage.textContent = 'Invalid username or password.';
+            }
         }
 
         // Wants Page - Add, Edit, and Delete Items
