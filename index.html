@@ -16,7 +16,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Container Styles */
         .container {
             width: 300px;
             padding: 20px;
@@ -31,7 +30,7 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"], input[type="date"] {
+        input[type="text"], input[type="password"], input[type="number"], input[type="date"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -152,6 +151,20 @@
             margin-bottom: 8px;
         }
 
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            background-color: #e3e3e3;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .account-actions {
+            display: flex;
+            gap: 5px;
+        }
+
         /* Wants Page */
         #wantsPage {
             margin-top: 20px;
@@ -244,9 +257,10 @@
         <div id="financialStatementPage" class="page active-page">
             <h2>Financial Statement</h2>
             <div id="financialStatement">
-                <p>Checking Account: $0</p>
-                <p>Savings Account: $0</p>
-                <p>Investment Account: $0</p>
+                <div id="accountsList"></div>
+                <input type="text" id="accountName" placeholder="Account name">
+                <input type="number" id="accountBalance" placeholder="Initial balance">
+                <button onclick="addAccount()">Add Account</button>
             </div>
         </div>
 
@@ -263,6 +277,7 @@
         <!-- Income/Expense Tracker Page -->
         <div id="trackerPage" class="page">
             <h2>Income/Expense Tracker</h2>
+            <select id="accountSelect"></select>
             <input type="text" id="amount" placeholder="Enter amount">
             <select id="category">
                 <option value="Income">Income</option>
@@ -310,6 +325,63 @@
                 errorMessage.style.color = 'red';
                 errorMessage.textContent = 'Invalid username or password.';
             }
+        }
+
+        // Accounts Management
+        let accounts = [];
+
+        function addAccount() {
+            const accountName = document.getElementById('accountName').value;
+            const accountBalance = parseFloat(document.getElementById('accountBalance').value);
+
+            if (accountName && !isNaN(accountBalance)) {
+                const newAccount = { name: accountName, balance: accountBalance };
+                accounts.push(newAccount);
+                displayAccounts();
+                document.getElementById('accountName').value = '';
+                document.getElementById('accountBalance').value = '';
+                updateAccountSelect();
+            }
+        }
+
+        function displayAccounts() {
+            const accountsList = document.getElementById('accountsList');
+            accountsList.innerHTML = '';
+            accounts.forEach((account, index) => {
+                const div = document.createElement('div');
+                div.classList.add('account-item');
+                div.innerHTML = `<span>${account.name}: $${account.balance.toFixed(2)}</span>
+                                <div class="account-actions">
+                                    <button onclick="editAccount(${index})">Edit</button>
+                                    <button onclick="deleteAccount(${index})">Delete</button>
+                                </div>`;
+                accountsList.appendChild(div);
+            });
+        }
+
+        function deleteAccount(index) {
+            accounts.splice(index, 1);
+            displayAccounts();
+            updateAccountSelect();
+        }
+
+        function editAccount(index) {
+            const account = accounts[index];
+            document.getElementById('accountName').value = account.name;
+            document.getElementById('accountBalance').value = account.balance;
+            deleteAccount(index); // Remove the old version of the account, user will need to re-submit changes
+        }
+
+        // Update the account selection in the Income/Expense Tracker
+        function updateAccountSelect() {
+            const accountSelect = document.getElementById('accountSelect');
+            accountSelect.innerHTML = '';
+            accounts.forEach((account, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = account.name;
+                accountSelect.appendChild(option);
+            });
         }
 
         // Wants Page - Add, Edit, and Delete Items
@@ -364,26 +436,28 @@
             const amount = parseFloat(document.getElementById('amount').value);
             const category = document.getElementById('category').value;
             const date = document.getElementById('date').value;
+            const selectedAccountIndex = document.getElementById('accountSelect').value;
             const transactionsList = document.getElementById('transactions');
             const summary = document.getElementById('summary');
 
-            if (!isNaN(amount) && date) {
+            if (!isNaN(amount) && date && selectedAccountIndex !== '') {
+                const selectedAccount = accounts[selectedAccountIndex];
                 const newTransaction = document.createElement('li');
+
                 if (category === 'Income') {
-                    netBalance += amount;
-                    newTransaction.innerHTML = `Income: +$${amount} on ${date}`;
+                    selectedAccount.balance += amount;
+                    newTransaction.innerHTML = `Income: +$${amount.toFixed(2)} on ${date} (to ${selectedAccount.name})`;
                     newTransaction.classList.add('income');
                 } else {
-                    netBalance -= amount;
-                    newTransaction.innerHTML = `Expense: -$${amount} on ${date}`;
+                    selectedAccount.balance -= amount;
+                    newTransaction.innerHTML = `Expense: -$${amount.toFixed(2)} on ${date} (from ${selectedAccount.name})`;
                     newTransaction.classList.add('expense');
                 }
 
                 transactionsList.appendChild(newTransaction);
                 document.getElementById('amount').value = '';
                 document.getElementById('date').value = '';
-
-                summary.textContent = `Net Balance: $${netBalance}`;
+                displayAccounts(); // Update the account balances
             }
         }
     </script>
